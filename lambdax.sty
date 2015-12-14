@@ -212,16 +212,16 @@
 \newcommand*{\MaybeFromList@}[2]{\Just{#1}}
 
 
-% Annoymous procedure
+% Anonymous procedures
 %
 
-\newcommand*{\ProcNamed@}[2]{%
-    \expandafter\newcommand\csname#1\endcsname[1]{#2}\csuse{#1}%
-}
 \newcounter{ProcCounter}
 \newcommand*{\Proc}{%
     \stepcounter{ProcCounter}%
     \ProcNamed@{Proc\the\value{ProcCounter}}%
+}
+\newcommand*{\ProcNamed@}[2]{%
+    \expandafter\newcommand\csname#1\endcsname[1]{#2}\csuse{#1}%
 }
 
 
