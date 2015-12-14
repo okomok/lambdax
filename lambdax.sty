@@ -178,7 +178,7 @@
 }
 
 % Foreach
-\newcommand*{\Foreach}[2]{\ForeachImpl{\Fun{#2}}{#1}}
+\newcommand*{\Foreach}[2]{\ForeachImpl{\Proc{#2}}{#1}}
 \newcommand*{\ForeachImpl}[1]{\Foldr{\ForeachImpl@{#1}}{}}
 \newcommand*{\ForeachImpl@}[3]{#1{#2}#3}
 
@@ -212,16 +212,16 @@
 \newcommand*{\MaybeFromList@}[2]{\Just{#1}}
 
 
-% Lambda
-%   makes expressions unfunctional, so that \ifnum etc is broken.
+% Annoymous procedure
+%
 
-\newcommand*{\FunNamed@}[2]{%
+\newcommand*{\ProcNamed@}[2]{%
     \expandafter\newcommand\csname#1\endcsname[1]{#2}\csuse{#1}%
 }
-\newcounter{Funcounter}
-\newcommand*{\Fun}{%
-    \stepcounter{Funcounter}%
-    \FunNamed@{Fun\the\value{Funcounter}}%
+\newcounter{ProcCounter}
+\newcommand*{\Proc}{%
+    \stepcounter{ProcCounter}%
+    \ProcNamed@{Proc\the\value{ProcCounter}}%
 }
 
 

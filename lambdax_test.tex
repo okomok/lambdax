@@ -30,14 +30,6 @@ Tests...
 \AssertFalse{\Null{\List{1,2}}}
 
 
-% \edef\myfun{\Fun{#1b}}
-% \begin{qstest}{test Fun}{}
-%     \Expect*{\myfun{a}}{ab}
-%     % \Fun{#1{b}}{\Fun{#1 c}} = b c
-%     % \Fun{\Fun{#1 ##1 c}}{a}{b} = a b c
-% \end{qstesto}
-
-
 % \Unlist{\List{\Unlist{\List{1,2,3}}}}
 % $\to$
 % \List{\Unlist{\List{1,2,3}}}\Unlist@{}
@@ -95,7 +87,7 @@ Tests...
     \Expect*{\Unlist{\Take{4}{\Iterate{\appendb}{a}}}}{a,ab,abb,abbb}
 \end{qstest}
 
-Iterate Test: \Unlist{\Take{4}{\Iterate{\Fun{#1b}}{a}}} = a,ab,abb,abbb
+Iterate Test: \Unlist{\Take{4}{\Iterate{\Proc{#1b}}{a}}} = a,ab,abb,abbb
 
 
 \begin{qstest}{TakeWhile}{}
@@ -108,7 +100,7 @@ Iterate Test: \Unlist{\Take{4}{\Iterate{\Fun{#1b}}{a}}} = a,ab,abb,abbb
 \end{qstest}
 
 
-Funcounter = \the\value{Funcounter}
+ProcCounter = \the\value{ProcCounter}
 
 
 \begin{qstest}{Pair}{}
