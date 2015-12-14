@@ -1,0 +1,251 @@
+\documentclass{article}
+\usepackage{lambdax,amsmath,qstest}
+
+\begin{document}
+
+Tests...
+
+
+% Bool test
+\AssertTrue{\True}
+\AssertFalse{\False}
+\AssertFalse{\Not\True}
+\AssertTrue{\Not\False}
+\AssertTrue{\Bool{\iftrue}}
+\AssertTrue{\Bool{\ifx\Identity\Identity}}
+\AssertFalse{\Bool{\ifx\Compose\Identity}}
+\AssertTrue{\Bool{\ifnum 3 < 4 }}
+\AssertFalse{\Bool{\ifnum 5 < 4 }}
+\AssertTrue{\Head{\Cons{\True}{\Nil}}}
+\AssertTrue{\Bool{\ifnum 3 = \Head{\List{3,2,1}} }}
+\AssertFalse{\Bool{\ifnum 2 = \Head{\List{3,2,1}} }}
+\AssertTrue{ \BoolAnd{\Lessthan{3}{9}}{\True} }
+\AssertTrue{ \BoolOr{\True}{\True} }
+\AssertTrue{ \BoolOr{\False}{\True} }
+\AssertTrue{ \BoolOr{\True}{\False} }
+\AssertFalse{ \BoolOr{\False}{\False} }
+\AssertTrue{ \BoolAnd{\Lessthan{3}{9}}{\True} }
+\AssertTrue{ \All{\Lessthan{3}}{\List{4,5,6}} }
+\AssertTrue{\Null{\Nil}}
+\AssertFalse{\Null{\List{1,2}}}
+
+
+% \edef\myfun{\Fun{#1b}}
+% \begin{qstest}{test Fun}{}
+%     \Expect*{\myfun{a}}{ab}
+%     % \Fun{#1{b}}{\Fun{#1 c}} = b c
+%     % \Fun{\Fun{#1 ##1 c}}{a}{b} = a b c
+% \end{qstesto}
+
+
+% \Unlist{\List{\Unlist{\List{1,2,3}}}}
+% $\to$
+% \List{\Unlist{\List{1,2,3}}}\Unlist@{}
+% $\to$
+% \Singleton{\Unlist{\List{1,2,3}}}\Unlist@{}
+% $\to$
+% \Cons{\Unlist{\List{1,2,3}}}\Nil\Unlist@{}
+% $\to$
+% \Unlist@{\Unlist{\List{1,2,3}}}\Nil
+% $\to$
+% \Unlist{\List{1,2,3}}\Foldr\PrependComma{}\Nil
+% $\to$
+% \List{1,2,3}\Unlist@{}\Foldr\PrependComma{}\Nil
+% $\to$
+% \Cons{1}{\Cons{2}{\Cons{3}\Nil}}\Unlist@{}\Foldr\PrependComma{}\Nil
+% $\to$
+% \Unlist@{1}{\Cons{2}{\Cons{3}\Nil}}\Foldr\PrependComma{}\Nil
+% $\to$
+% 1\Foldr\PrependComma{}{\Cons{2}{\Cons{3}\Nil}}\Foldr\PrependComma{}\Nil
+% $\to$
+% 1,2,3
+
+\begin{qstest}{List}{}
+    \Expect*{\Unlist{\List{1,2,3}}}{1,2,3}
+    \Expect*{\Unlist{\List{1,2 , 3}}}{1,2 , 3}
+    \Expect*{\Unlist{\List{1,2,{,}3}}}{1,2,{,}3}
+    \Expect*{\ShowList{\List{1,2,3}}}{[1,2,3]}
+% Works. See above. 
+    \Expect*{\Unlist{\List{\Unlist{\List{1,2,3}}}}}{1,2,3}
+    \Expect*{\Unlist{\List{\Unlist{\List{1,2}}}}}{1,2}
+    \Expect*{\Unlist{\List{\Unlist{\List{1}}}}}{1}
+    \Expect*{\Unlist{\List{\Unlist{\List1}}}}{1}
+    \Expect*{\Compose\Unlist\List{\Compose\Unlist\List{1,2,3}}}{1,2,3}
+    \Expect*{\Compose\Unlist\List{\Compose\Unlist\List{1,2}}}{1,2}
+    \Expect*{\Compose\Unlist\List{\Compose\Unlist\List{1}}}{1}
+    \Expect*{\Compose\Unlist\List{\Compose\Unlist\List1}}{1}
+\end{qstest}
+
+
+\begin{qstest}{Take}{}
+    \Expect*{\Unlist{\Take{3}{\List{1,2,3,4}}}}{1,2,3}
+    \Expect*{\Unlist{\Take{0}{\List{1,2,3,4}}}}{}
+\end{qstest}
+
+
+\begin{qstest}{Drop}{}
+    \Expect*{\Unlist{\Drop{2}{\List{1,2,3,4}}}}{3,4}
+    \Expect*{\Unlist{\Drop{0}{\List{1,2,3,4}}}}{1,2,3,4}
+    \Expect*{\Unlist{\Drop{7}{\List{1,2,3,4}}}}{}
+\end{qstest}
+
+
+\begin{qstest}{Iterate}{}
+    \newcommand*{\appendb}[1]{#1b}
+    \Expect*{\Unlist{\Take{4}{\Iterate{\appendb}{a}}}}{a,ab,abb,abbb}
+\end{qstest}
+
+Iterate Test: \Unlist{\Take{4}{\Iterate{\Fun{#1b}}{a}}} = a,ab,abb,abbb
+
+
+\begin{qstest}{TakeWhile}{}
+    \Expect*{\Unlist{\TakeWhile{\Lessthan{3}}{\List{5,6,4,2,5,3,4}}}}{5,6,4}
+\end{qstest}
+
+
+\begin{qstest}{DropWhile}{}
+    \Expect*{\Unlist{\DropWhile{\Lessthan{3}}{\List{5,6,4,2,5,3,4}}}}{2,5,3,4}
+\end{qstest}
+
+
+Funcounter = \the\value{Funcounter}
+
+
+\begin{qstest}{Pair}{}
+    \edef\papa{\Unpair{\Pair{1,2}}}
+    \newcommand*{\uncurryme}[2]{#1#2}
+    \Expect*{\Fst{\Pair{1,2}}}{1}
+    \Expect*{\Snd{\Pair{1,2}}}{2}
+    \Expect*{\Snd{\Swap{\Pair{1,2}}}}{1}
+    \Expect*{\Fst{\Swap{\Pair{1,2}}}}{2}
+    \Expect*{\Unpair{\Pair{1,2}}}{1,2}
+    \Expect*{\Compose\Unpair\Pair{1,2}}{1,2}
+    \Expect*{\Uncurry{\uncurryme}{\Pair{1,2}}}{12}
+    \Expect*{\Fst{\expandafter\Pair\papa}}{1}
+    % \Expect*{\Unpair{\Pair{\Unpair{\Pair{1,2}}}}}{1,2}
+\end{qstest}
+\AssertTrue{\EqualWith\NumEq{\PairToList{\Pair{1,2}}}{\List{1,2}}}
+
+
+\begin{qstest}{Zip}{}
+    \Expect*{%
+        \Unlist{\Map{\ShowPair}{\Zip{\List{1,2,3}}{\List{a,b,c,d}}}}%
+    }{(1,a),(2,b),(3,c)}
+    \Expect*{%
+        \Unlist{\Map{\ShowPair}{\Zip{\List{1,2,3,4}}{\List{a,b,c}}}}%
+    }{(1,a),(2,b),(3,c)}
+\end{qstest}
+
+
+% Unzip
+\AssertTrue{%
+    \EqualWith\NumEq{%
+        \Fst{\Unzip{\Zip{\List{1,2,3,4}}{\List{a,b,c}}}}%
+    }{\List{1,2,3}}%
+}
+
+
+% Init
+\AssertTrue{%
+    \EqualWith\NumEq{%
+        \Init{\List{1,2,3}}%
+    }{\List{1,2}}%
+}
+
+
+\begin{qstest}{Nth}{}
+    \Expect*{\Nth{3}{\List{1,2,3,4,5}}}{4}
+    \Expect*{\Nth{0}{\List{1,2,3,4,5}}}{1}
+\end{qstest}
+
+
+\begin{qstest}{Last}{}
+    \Expect*{\Last{\List{1,2,3,4,5}}}{5}
+    \Expect*{\Last{\List{1}}}{1}
+\end{qstest}
+
+
+\begin{qstest}{Length}{}
+    \Expect*{\Length{\List{1,2,3}}}{3}
+    \Expect*{\Length{\Nil}}{0}
+\end{qstest}
+
+
+% EqualWith
+\newcommand*{\alwaystrue}[2]{\True}
+\newcommand*{\alwaysfalse}[2]{\False}
+\AssertTrue{\EqualWith\NumEq{\List{1,2,3}}{\List{1,2,3}}}
+\AssertTrue{\EqualWith{\alwaystrue}{\Nil}{\Nil}}
+\AssertTrue{\EqualWith{\alwaysfalse}{\Nil}{\Nil}}
+\AssertFalse{\EqualWith\NumEq{\List{1,2}}{\List{1,2,3}}}
+\AssertFalse{\EqualWith\NumEq{\List{1,2}}{\List{1,2,3}}}
+\AssertFalse{\EqualWith\NumEq{\List{1,2,3}}{\List{1,2}}}
+\AssertFalse{\EqualWith\NumEq{\Nil}{\List{1,2}}}
+\AssertFalse{\EqualWith\NumEq{\List{1,2,3}}{\Nil}}
+\AssertFalse{\EqualWith\NumEq{\List{1,2,3}}{\List{1,2,2}}}
+
+
+% Foreach
+\Foreach{\List{1,2,3}}{#1} = 123
+
+
+% Unfoldr
+\newcommand*{\FibImpl}[1]{\Just{\ConsPair{\Fst{#1}}{\ConsPair{\Snd{#1}}{\NumPlus{\Fst{#1}}{\Snd{#1}}}}}}
+\newcommand*{\Fibs}{\Unfoldr\FibImpl{\ConsPair{0}{1}}}
+\newcommand*{\MyIterImpl}[2]{\Just{\ConsPair{#2}{#1{#2}}}}
+\newcommand*{\MyIter}[1]{\Unfoldr{\MyIterImpl{#1}}}
+\AssertTrue{\EqualWith\NumEq{\Take{8}\Fibs}{\List{0,1,1,2,3,5,8,13}}}
+\AssertTrue{\EqualWith\NumEq{\Take{3}{\MyIter\NumInc{3}}}{\List{3,4,5}}}
+
+
+% Concat
+\AssertTrue{\EqualWith\NumEq{\List{1,2,3,4,5,6}}{\Concat{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}}
+\AssertTrue{\EqualWith\NumEq{\List{1,2,3,4,5,6}}{\ConcatMap\Id{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}}
+
+
+% Maybe
+\begin{qstest}{Maybe}{}
+    \Expect*{\FromJust{\Just{3}}}{3}
+    \Expect*{\FromJust{\MaybeFromList{\List{1}}}}{1}
+    \Expect*{\FromJust{\MaybeFromList{\List{1,2}}}}{1}
+\end{qstest}
+\AssertTrue{\IsJust{\Just{3}}}
+\AssertFalse{\IsJust{\Nothing}}
+\AssertFalse{\IsNothing{\Just{3}}}
+\AssertTrue{\IsNothing{\Nothing}}
+\AssertTrue{\IsNothing{\MaybeFromList\Nil}}
+\AssertTrue{\EqualWith\NumEq{\MaybeToList{\Just{3}}}{\List{3}}}
+\AssertTrue{\EqualWith\NumEq{\MaybeToList{\Nothing}}\Nil}
+%\FromJust\Nothing
+
+
+\begin{qstest}{Arithmetic}{}
+    \Expect*{\NumPlus{0}{0}}{0}
+    \Expect*{\NumPlus{0}{3}}{3}
+    \Expect*{\NumPlus{3}{0}}{3}
+    \Expect*{\NumPlus{2}{3}}{5}
+    \Expect*{\NumMinus{3}{0}}{3}
+    \Expect*{\NumMinus{3}{1}}{2}
+    \Expect*{\NumMinus{3}{3}}{0}
+    \Expect*{\NumMult{3}{2}}{6}
+    \Expect*{\NumMult{3}{4}}{12}
+    \Expect*{\NumMult{1}{2}}{2}
+    \Expect*{\NumMult{0}{2}}{0}
+    \Expect*{\NumMult{2}{0}}{0}
+    \Expect*{\NumMult{0}{0}}{0}
+\end{qstest}
+
+\newcommand*{\FixImpl}[2]{%
+    \If{\BoolOr{\Bool{\ifnum#2=0 }}{\Bool{\ifnum#2=1 }}}{%
+        1%
+    }{%
+        \NumPlus{#1{\NumMinus{#2}{1}}}{#1{\NumMinus{#2}{2}}}%
+    }%
+}
+
+\begin{qstest}{Fix}{}
+    \Expect*{\Fix\FixImpl{6}}{13}
+\end{qstest}
+
+
+\end{document}

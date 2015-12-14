@@ -1,0 +1,20 @@
+\documentclass{article}
+\usepackage{lambdax}
+
+
+\begin{document}
+
+Test:
+
+\newcommand*{\fiba}[1]{\If{\NumLess{#1}{2}}{#1}{\NumPlus{\fiba{\NumDec{#1}}}{\fiba{\NumDec{\NumDec{#1}}}}}}
+
+% \fiba{11} % too slow, hence no global memoization
+
+\newcommand*{\fwdfiba}[1]{#1#1#1#1#1#1#1}
+
+% \fwdfiba{\fiba{10}} % slow, hence no laziness
+\Unuse{\fiba{11}} % immediate, hence by name
+
+
+\end{document}
+
