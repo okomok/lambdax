@@ -1,0 +1,25 @@
+\documentclass{article}
+\usepackage{lambdax,qstest}
+
+
+\begin{document}
+
+Test:
+
+\newcommand*{\fibs}{\Cons{0}{\Cons{1}{\ZipWith\NumPlus\fibs{\Tail\fibs}}}}
+\Unlist{\Take{9}{\fibs}}% --> 0,1,1,2,3,5,8,13,21
+
+\newcounter{Cnt}
+\newcommand*{\OneLike}{\stepcounter{Cnt}1}
+
+\OneLike
+
+% \begin{qstest}{OneLike}{}
+%     \Expect*{\OneLike}{1}
+% \end{qstest}
+
+%\ifnum1=1 3\else4\fi
+%\ifnum1=\OneLike3\else4\fi
+
+\end{document}
+

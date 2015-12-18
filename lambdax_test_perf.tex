@@ -10,9 +10,14 @@ Test:
 
 % \fiba{11} % too slow, hence no global memoization
 
-\newcommand*{\fwdfiba}[1]{#1#1#1#1#1#1#1}
+\newcommand*{\fwdfiba}[1]{#1#1#1#1#1}
+\newcommand*{\fwdfibaz}[1]{%
+    \edef\tmp@{#1}%
+    \tmp@\tmp@\tmp@\tmp@\tmp@%
+}
 
-% \fwdfiba{\fiba{10}} % slow, hence no laziness
+%\fwdfiba{\fiba{10}} % slow, hence no laziness
+%\fwdfibaz{\fiba{10}} % ok, faster than above.
 \Unuse{\fiba{11}} % immediate, hence by name
 
 

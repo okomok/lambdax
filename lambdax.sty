@@ -38,6 +38,8 @@
 \newcommand*{\Bool}{\TeXif}
 \newcommand*{\If}{\Identity}
 \newcommand*{\Iftex}{\TeXif}
+\newcommand*{\BoolToNum}[1]{\If{#1}{1}{0}}
+\newcommand*{\NumToBool}[1]{\If{\NumEq{#1}{0}}\False\True}
 
 
 % Function
@@ -102,10 +104,13 @@
 \newcommand*{\ListAll}{\All}
 
 % Building lists 
-% TODO
-
-% Accumulating maps
-% TODO
+\newcommand*{\Scanl}[3]{\Foldr{\Scanl@{#1}}\Singleton{#3}{#2}}
+\newcommand*{\Scanl@}[4]{\Cons{#4}{#3{#1{#4}{#2}}}}
+\newcommand*{\ScanlOne}[2]{\If{\Null{#2}}\Nil{\Scanl{#1}{\Head{#2}}{\Tail{#2}}}}
+\newcommand*{\Scanr}[2]{\Foldr{\Scanr@{#1}}{\Singleton{#2}}}
+\newcommand*{\Scanr@}[3]{\Cons{#1{#2}{\Head{#3}}}{#3}}
+\newcommand*{\ScanrOne}[2]{\If{\Null{#2}}\Nil{\Foldr{\ScanrOne@{#1}}\Singleton{\Tail{#2}}{\Head{#2}}}}
+\newcommand*{\ScanrOne@}[4]{\Cons{#1{#4}{\Head{#3{#2}}}}{#3{#2}}}
 
 % Infinite lists
 \newcommand*{\Iterate}[2]{\Cons{#2}{\Iterate{#1}{#1{#2}}}}
@@ -142,9 +147,6 @@
 \newcommand*{\Break}[1]{\Span{\Compose\Not{#1}}}
 
 % Predicates
-% TODO
-
-% Searching lists
 % TODO
 
 % Indexing lists
@@ -208,8 +210,8 @@
 \newcommand*{\IsNothing}{\Compose\Not\IsJust}
 \newcommand*{\FromJust}[1]{#1\Id{\ErrorMsg{FromJust Nothing}}}
 \newcommand*{\MaybeToList}[1]{#1\Singleton\Nil}
-\newcommand*{\MaybeFromList}{\Foldr\MaybeFromList@\Nothing}
-\newcommand*{\MaybeFromList@}[2]{\Just{#1}}
+\newcommand*{\ListToMaybe}{\Foldr\ListToMaybe@\Nothing}
+\newcommand*{\ListToMaybe@}[2]{\Just{#1}}
 
 
 % Anonymous procedures
