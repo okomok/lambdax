@@ -13,6 +13,8 @@
 %   https://hackage.haskell.org/package/base/docs/Data-List.html
 %   https://hackage.haskell.org/package/base/docs/Data-Function.html
 %   https://hackage.haskell.org/package/base/docs/Data-Maybe.html
+%   http://stackoverflow.com/questions/24118741/implementation-of-inits-using-foldr
+%   http://stackoverflow.com/questions/24129119/implementing-tails-using-foldr-in-haskell
 
 
 % Workarounds
@@ -74,6 +76,7 @@
 \newcommand*{\Unlist}[1]{#1\Unlist@{}}
 \newcommand*{\Unlist@}[1]{#1\Foldr\PrependComma{}}
 \newcommand*{\ShowList}[1]{[\Unlist{#1}]}
+\newcommand*{\ShowLists}[1]{\ShowList{\Map\ShowList{#1}}}
 
 \newcommand*{\List}[1]{\List@#1,\Listend@\@eolst}
 \newcommand*{\Listend@}{}
@@ -145,6 +148,11 @@
 }
 \newcommand*{\Span}[2]{\ConsPair{\TakeWhile{#1}{#2}}{\DropWhile{#1}{#2}}}
 \newcommand*{\Break}[1]{\Span{\Compose\Not{#1}}}
+\newcommand*{\Inits}{\Foldr\Inits@{\Singleton\Nil}}
+\newcommand*{\Inits@}[2]{\Cons\Nil{\Map{\Cons{#1}}{#2}}}
+\newcommand*{\Tails}{\Foldr\Tails@{\Singleton\Nil}}
+\newcommand*{\Tails@}[2]{\Cons{\Cons{#1}{\Head{#2}}}{#2}}
+
 
 % Predicates
 % TODO
