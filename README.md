@@ -9,5 +9,9 @@ lambdax.sty provides date structures missing from the original:
 * Pair
 * Functions for lists, etc.
 
+#### Evaluation Strategy of Macro
+
+* Call-by-name (neither lazy nor memoized)
+
 
 Shunsuke Sogame <<okomok@gmail.com>>
