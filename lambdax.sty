@@ -53,7 +53,8 @@
 \newcommand*{\Apply}[2]{#1{#2}}
 \newcommand*{\Then}{\Flip\Compose}
 \newcommand*{\Fix}[1]{#1{\Fix{#1}}}
-
+\newcommand*{\ComposeList}[1]{\Foldr\Compose\Identity{\List{#1}}}
+\newcommand*{\ThenList}[1]{\Foldr\Then\Identity{\List{#1}}}
 
 % Prelude
 %
@@ -241,8 +242,8 @@
 \newcommand*{\Unuse}[1]{}
 \newcommand*{\PrependComma}[2]{,#1#2}% no spaces
 
-\newcommand*{\In}[2]{\Foldr\In@{#2}{\List{#1}}}
-\newcommand*{\In@}[2]{\begin{#1}#2\end{#1}}
+\newcommand*{\InList}[2]{\Foldr\In{#2}{\List{#1}}}
+\newcommand*{\In}[2]{\begin{#1}#2\end{#1}}
 
 % Arithmetic
 \newcommand*{\NumInc}[1]{\ifcase#1 %
@@ -275,4 +276,5 @@
 \newcommand*{\NumLess}{\Lessthan}
 \newcommand*{\NumGtr}[2]{\Iftex{\ifnum#1>#2 }}
 \newcommand*{\NumEq}[2]{\Iftex{\ifnum#1=#2 }}
+\newcommand*{\DimEq}[2]{\Iftex{\ifdim#1=#2 }}
 
